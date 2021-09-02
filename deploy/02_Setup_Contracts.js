@@ -24,18 +24,6 @@ module.exports = async ({
     oracle = networkConfig[chainId]['oracle']
   }
 
-  //Try Auto-fund APIConsumer contract with LINK
-  const APIConsumer = await deployments.get('APIConsumer')
-  const apiConsumer = await ethers.getContractAt('APIConsumer', APIConsumer.address)
-
-  if (await autoFundCheck(apiConsumer.address, networkName, linkTokenAddress, additionalMessage)) {
-    await hre.run("fund-link", { contract: apiConsumer.address, linkaddress: linkTokenAddress })
-  } else {
-    log("Then run API Consumer contract with following command:")
-    log("npx hardhat request-data --contract " + apiConsumer.address + " --network " + networkName)
-  }
-  log("----------------------------------------------------")
-
 
   //Now try Auto-fund VRFConsumer contract
 

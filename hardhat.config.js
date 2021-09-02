@@ -5,23 +5,19 @@ require("@nomiclabs/hardhat-waffle")
 require("@nomiclabs/hardhat-ethers")
 require("@nomiclabs/hardhat-truffle5")
 require("@nomiclabs/hardhat-etherscan")
-require("@appliedblockchain/chainlink-plugins-api-consumer")
-require("@appliedblockchain/chainlink-plugins-price-consumer")
-require("@appliedblockchain/chainlink-plugins-random-number-consumer")
+// require("@appliedblockchain/chainlink-plugins-random-number-consumer")
 require("hardhat-deploy")
 require("./tasks/accounts")
 require("./tasks/balance")
 require("./tasks/fund-link")
 require("./tasks/withdraw-link")
 require("./tasks/block-number")
-require("./tasks/price-consumer")
 
 
 require('dotenv').config()
 
-const MAINNET_RPC_URL = process.env.MAINNET_RPC_URL || process.env.ALCHEMY_MAINNET_RPC_URL || "https://eth-mainnet.alchemyapi.io/v2/your-api-key"
-const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL || "https://eth-rinkeby.alchemyapi.io/v2/your-api-key"
-const KOVAN_RPC_URL = process.env.KOVAN_RPC_URL || "https://eth-kovan.alchemyapi.io/v2/your-api-key"
+const POLYGON_MAINNET_RPC_URL = process.env.POLYGON_MAINNET_RPC_URL
+const MUMBAI_TESTNET_RPC_URL = process.env.MUMBAI_TESTNET_RPC_URL
 const MNEMONIC = process.env.MNEMONIC || "your mnemonic"
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "Your etherscan API key"
 // optional
@@ -38,31 +34,15 @@ module.exports = {
         },
         localhost: {
         },
-        kovan: {
-            url: KOVAN_RPC_URL,
-            // accounts: [PRIVATE_KEY],
-            accounts: {
-                mnemonic: MNEMONIC,
-            },
-            saveDeployments: true,
-        },
-        rinkeby: {
-            url: RINKEBY_RPC_URL,
-            // accounts: [PRIVATE_KEY],
-            accounts: {
-                mnemonic: MNEMONIC,
-            },
-            saveDeployments: true,
-        },
-        ganache: {
-            url: 'http://localhost:8545',
-            accounts: {
-                mnemonic: MNEMONIC,
-            }
-        },
         mainnet: {
-            url: MAINNET_RPC_URL,
-            // accounts: [PRIVATE_KEY],
+            url: POLYGON_MAINNET_RPC_URL,
+            accounts: {
+                mnemonic: MNEMONIC,
+            },
+            saveDeployments: true,
+        },
+        mumbai: {
+            url: MUMBAI_TESTNET_RPC_URL,
             accounts: {
                 mnemonic: MNEMONIC,
             },
