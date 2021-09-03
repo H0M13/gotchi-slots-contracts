@@ -27,10 +27,10 @@ module.exports = {
     defaultNetwork: "hardhat",
     networks: {
         hardhat: {
-            // // If you want to do some forking, uncomment this
-            // forking: {
-            //   url: MAINNET_RPC_URL
-            // }
+            // If you want to do some forking, uncomment this
+            forking: {
+              url: "https://speedy-nodes-nyc.moralis.io/4771c3a583f1453d9ff49604/polygon/mainnet/archive"
+            }
         },
         localhost: {
         },
@@ -65,6 +65,9 @@ module.exports = {
     },
     solidity: {
         compilers: [
+            {
+                version: "0.8.1"
+            },
             {
                 version: "0.6.6"
             },
