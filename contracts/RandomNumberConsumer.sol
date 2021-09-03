@@ -13,10 +13,12 @@ contract RandomNumberConsumer is VRFConsumerBase, Ownable {
 
     mapping(bytes32 => address) public requestIdToAddress;
     mapping(bytes32 => uint256) public requestIdToRandomNumber;
+    mapping(bytes32 => bool) public requestIdToProcessedBool;
 
     mapping(address => uint256) public addressToFakeChips;
 
     event RequestedRandomness(bytes32 requestId);
+    event RandomnessReceived(bytes32 requestId, address requestAddress, uint256 randomResult);
     event SpinsOutcome(bytes32 requestId, address player, uint256 randomResult, uint256 payout1, uint256 payout2, uint256 payout3, uint256 payout4, uint256 payout5, uint256 payout6, uint256 payout7, uint256 payout8, uint256 payout9, uint256 payout10);
 
     function linkBalance() external view returns (uint256 linkBalance_) {
@@ -63,6 +65,19 @@ contract RandomNumberConsumer is VRFConsumerBase, Ownable {
         randomResult = randomness;
         address requestAddress = requestIdToAddress[requestId];
         requestIdToRandomNumber[requestId] = randomness;
+        
+        emit RandomnessReceived(requestId, requestAddress, randomness);
+    }
+
+    function processRandomNumber(bytes32 requestId) public {
+        require(requestIdToProcessedBool[requestId] == false, "RequestId already processed");
+
+        requestIdToProcessedBool[requestId] = true;
+
+        address requestAddress = requestIdToAddress[requestId];
+        uint256 randomness = requestIdToRandomNumber[requestId];
+
+
         uint256[] memory expandedValues = expand(randomness, 10);
         uint[] memory payouts = new uint[](10);
         for (uint i=0; i<10; i++) {
@@ -87,7 +102,7 @@ contract RandomNumberConsumer is VRFConsumerBase, Ownable {
         }
 
         addressToFakeChips[requestAddress] += totalPayout;
-        emit SpinsOutcome(requestId, requestAddress, payouts[0], payouts[1], payouts[2], payouts[3], payouts[4], payouts[5], payouts[6], payouts[7], payouts[8], payouts[9], payouts[10]);
+        emit SpinsOutcome(requestId, requestAddress, randomResult, payouts[0], payouts[1], payouts[2], payouts[3], payouts[4], payouts[5], payouts[6], payouts[7], payouts[8], payouts[9]);
     }
 
     function withdrawLink() external onlyOwner {

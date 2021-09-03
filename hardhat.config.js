@@ -34,7 +34,7 @@ module.exports = {
         },
         localhost: {
         },
-        mainnet: {
+        polygon: {
             url: POLYGON_MAINNET_RPC_URL,
             accounts: {
                 mnemonic: MNEMONIC,
