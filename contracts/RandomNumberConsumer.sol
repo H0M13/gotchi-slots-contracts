@@ -12,8 +12,8 @@ contract RandomNumberConsumer is VRFConsumerBase, Ownable {
     address public vrfCoordinator;
     address public link;
 
-    uint public AMOUNT_PER_10_SPINS = 10 ether;
-    int256 public reserves = 1000 ether;
+    uint256 public AMOUNT_PER_10_SPINS = 10 ether;
+    uint256 public reserves = 1000 ether;
     // 18 decimal places
     uint256 public jackpotAmount = 200 ether;
 
@@ -81,13 +81,13 @@ contract RandomNumberConsumer is VRFConsumerBase, Ownable {
         require(facet.ownerOf(gotchiId) == msg.sender, "Sender doesn't own this aavegotchi");
         require(addressToFakeTokens[msg.sender] >= AMOUNT_PER_10_SPINS, "Not enough funds");
 
-        addressToFakeTokens[msg.sender] -= AMOUNT_PER_10_SPINS;
+        addressToFakeTokens[msg.sender] = addressToFakeTokens[msg.sender].sub(AMOUNT_PER_10_SPINS);
 
         // Put 99.5% into reserves
-        reserves += int256(AMOUNT_PER_10_SPINS * (0.995 ether));
+        reserves = reserves.add(AMOUNT_PER_10_SPINS.mul(995).div(1000));
 
         // Add .5% to jackpot
-        jackpotAmount += AMOUNT_PER_10_SPINS * (0.005 ether);
+        jackpotAmount = jackpotAmount.add(AMOUNT_PER_10_SPINS.mul(5).div(1000));
 
         requestId = requestRandomness(keyHash, fee);
 
@@ -150,37 +150,36 @@ contract RandomNumberConsumer is VRFConsumerBase, Ownable {
             uint256 spinValue = (expandedValues[i] % 100000) + 1;
             if (spinValue <= maxFor0) {
                 requestIdToSpinOutcomes[requestId][i] = 0 ether;
-                addressToFakeTokens[requestIdToAddress[requestId]] += 0 ether;
             } 
             else if (spinValue > maxFor0 && spinValue <= maxFor1) {
                 requestIdToSpinOutcomes[requestId][i] = 1 ether;
-                addressToFakeTokens[requestIdToAddress[requestId]] += 1 ether;
-                reserves -= 1 ether;
+                addressToFakeTokens[requestIdToAddress[requestId]] = addressToFakeTokens[requestIdToAddress[requestId]].add(1 ether);
+                reserves = reserves.sub(1 ether);
             }
             else if (spinValue > maxFor1 && spinValue <= maxFor2) {
                 requestIdToSpinOutcomes[requestId][i] = 2 ether;
-                addressToFakeTokens[requestIdToAddress[requestId]] += 2 ether;
-                reserves -= 2 ether;
+                addressToFakeTokens[requestIdToAddress[requestId]] = addressToFakeTokens[requestIdToAddress[requestId]].add(2 ether);
+                reserves = reserves.sub(2 ether);
             }
             else if (spinValue > maxFor2 && spinValue <= maxFor5) {
                 requestIdToSpinOutcomes[requestId][i] = 5 ether;
-                addressToFakeTokens[requestIdToAddress[requestId]] += 5 ether;
-                reserves -= 5 ether;
+                addressToFakeTokens[requestIdToAddress[requestId]] = addressToFakeTokens[requestIdToAddress[requestId]].add(5 ether);
+                reserves = reserves.sub(5 ether);
             }
             else if (spinValue > maxFor5 && spinValue <= maxFor25) {
                 requestIdToSpinOutcomes[requestId][i] = 25 ether;
-                addressToFakeTokens[requestIdToAddress[requestId]] += 25 ether;
-                reserves -= 25 ether;
+                addressToFakeTokens[requestIdToAddress[requestId]] = addressToFakeTokens[requestIdToAddress[requestId]].add(25 ether);
+                reserves = reserves.sub(25 ether);
             }
             else if (spinValue > maxFor25 && spinValue <= maxFor100) {
                 requestIdToSpinOutcomes[requestId][i] = 100 ether;
-                addressToFakeTokens[requestIdToAddress[requestId]] += 100 ether;
-                reserves -= 100 ether;
+                addressToFakeTokens[requestIdToAddress[requestId]] = addressToFakeTokens[requestIdToAddress[requestId]].add(100 ether);
+                reserves = reserves.sub(100 ether);
             }
             else {
                 // JACKPOT!!!
                 requestIdToSpinOutcomes[requestId][i] = jackpotAmount;
-                addressToFakeTokens[requestIdToAddress[requestId]] += jackpotAmount;
+                addressToFakeTokens[requestIdToAddress[requestId]] = addressToFakeTokens[requestIdToAddress[requestId]].add(jackpotAmount);
                 jackpotAmount = 0;
             }
         }
@@ -208,13 +207,13 @@ contract RandomNumberConsumer is VRFConsumerBase, Ownable {
 
     function mintFakeTokens() external {
         require(addressToClaimedFakeTokensBool[msg.sender] == false, "Already claimed fake tokens");
-        addressToFakeTokens[msg.sender] += 100 ether;
+        addressToFakeTokens[msg.sender] = addressToFakeTokens[msg.sender].add(100 ether);
         addressToClaimedFakeTokensBool[msg.sender] = true;
     }
 
     function mintFakeTokens(address to) external {
         require(addressToClaimedFakeTokensBool[to] == false, "Already claimed fake tokens");
-        addressToFakeTokens[to] += 100 ether;
+        addressToFakeTokens[to] = addressToFakeTokens[to].add(100 ether);
         addressToClaimedFakeTokensBool[to] = true;
     }
 }
