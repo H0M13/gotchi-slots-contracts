@@ -21,14 +21,12 @@ Don't commit and push any changes to .env files that may contain sensitive infor
 POLYGON_MAINNET_RPC_URL='www.infura.io/asdfadsfafdadf'
 MUMBAI_TESTNET_RPC_URL='www.infura.io/asdfadsfafdadf'
 MNEMONIC='cat dog frog...'
-MAINNET_RPC_URL="https://eth-mainnet.alchemyapi.io/v2/your-api-key"
 ```
 `bash` example
 ```
 export POLYGON_MAINNET_RPC_URL='www.infura.io/asdfadsfafdadf'
 export MUMBAI_TESTNET_RPC_URL='www.infura.io/asdfadsfafdadf'
 export MNEMONIC='cat dog frog...'
-export MAINNET_RPC_URL="https://eth-mainnet.alchemyapi.io/v2/your-api-key"
 ```
 
 Then you can install all the dependencies
